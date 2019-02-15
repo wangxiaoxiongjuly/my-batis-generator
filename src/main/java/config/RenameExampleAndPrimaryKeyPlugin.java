@@ -1,10 +1,13 @@
-package generatorConfig;
+package config;
 
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
 
 import java.util.List;
 
+/**
+ * @author wenxuan.wang
+ */
 public class RenameExampleAndPrimaryKeyPlugin extends PluginAdapter {
     @Override
     public boolean validate(List<String> warnings) {

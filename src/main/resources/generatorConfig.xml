@@ -23,17 +23,17 @@
             <property name="replaceString" value="Condition"/>
         </plugin>
         <!-- 重命名主键插件  -->
-        <plugin type="generatorConfig.RenameExampleAndPrimaryKeyPlugin" />
+        <plugin type="config.RenameExampleAndPrimaryKeyPlugin" />
         <!-- 文件覆盖插件 -->
-        <plugin type="generatorConfig.OverIsMergeablePlugin" />
+        <plugin type="config.OverIsMergeablePlugin" />
 
         <!-- 批量添加插件 -->
-        <plugin type="generatorConfig.BatchInsertPlugin" />
+        <plugin type="config.BatchInsertPlugin" />
         <!-- 批量修改插件 -->
-        <plugin type="generatorConfig.BatchUpdatePlugin" />
+        <plugin type="config.BatchUpdatePlugin" />
 
         <plugin type="${dateBasePlugin}" />
-        <plugin type="generatorConfig.CommentPlugin">
+        <plugin type="config.CommentPlugin">
             <property name="modelClassAuthor" value="${author}" />
         </plugin>
 

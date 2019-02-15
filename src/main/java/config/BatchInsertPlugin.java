@@ -1,11 +1,12 @@
-package generatorConfig;
+package config;
 
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import generatorConfig.content.*;
+import config.content.*;
+import config.exception.GenterException;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
@@ -20,7 +21,9 @@ import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
-
+/**
+ * @author wenxuan.wang
+ */
 public class BatchInsertPlugin extends PluginAdapter {
 
     /**
@@ -71,7 +74,7 @@ public class BatchInsertPlugin extends PluginAdapter {
             if (introspectedTable.getRules().generatePrimaryKeyClass()) {
                 paramListType = new FullyQualifiedJavaType(introspectedTable.getPrimaryKeyType());
             } else {
-                throw new RuntimeException("生成失败");
+                throw new GenterException("生成失败");
             }
         }
         paramType.addTypeArgument(paramListType);
@@ -93,17 +96,17 @@ public class BatchInsertPlugin extends PluginAdapter {
         //insert方法配置
         XmlElement insertBatchElement = new XmlElement(Ele.INSERT);
         insertBatchElement.addAttribute(new Attribute(Attr.ID, Function.INSERT_BATCH_SELECTIVE));
-        insertBatchElement.addAttribute(new Attribute(Attr.PARAMETERTYPE, JavaType.LIST));
+        insertBatchElement.addAttribute(new Attribute(Attr.PARAMETER_TYPE, JavaType.LIST));
 
         XmlElement javaPropertyAndDbType = new XmlElement(Ele.TRIM);
         javaPropertyAndDbType.addAttribute(new Attribute(Attr.PREFIX, Text.LEFT_BRACKET));
         javaPropertyAndDbType.addAttribute(new Attribute(Attr.SUFFIX, Text.RIGHT_BRACKET));
-        javaPropertyAndDbType.addAttribute(new Attribute(Attr.SUFFIXOVERRIDES, Text.COMMA));
+        javaPropertyAndDbType.addAttribute(new Attribute(Attr.SUFFIX_OVERRIDES, Text.COMMA));
 
         XmlElement trim1Element = new XmlElement(Ele.TRIM);
         trim1Element.addAttribute(new Attribute(Attr.PREFIX, Text.LEFT_BRACKET));
         trim1Element.addAttribute(new Attribute(Attr.SUFFIX, Text.RIGHT_BRACKET));
-        trim1Element.addAttribute(new Attribute(Attr.SUFFIXOVERRIDES, Text.COMMA));
+        trim1Element.addAttribute(new Attribute(Attr.SUFFIX_OVERRIDES, Text.COMMA));
 
         XmlElement foreachElement = new XmlElement(Ele.FOREACH);
         foreachElement.addAttribute(new Attribute(Attr.COLLECTION, Text.LIST));

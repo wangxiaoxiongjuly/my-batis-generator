@@ -1,5 +1,8 @@
-package generatorConfig.content;
+package config.content;
 
+/**
+ * @author wenxuan.wang
+ */
 public class JavaType {
     private JavaType() {
     }

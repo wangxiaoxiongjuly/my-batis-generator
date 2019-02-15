@@ -1,7 +1,7 @@
-package generatorConfig;
+package config;
 
-import generatorConfig.content.Attr;
-import generatorConfig.content.Ele;
+import config.content.Attr;
+import config.content.Ele;
 import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
@@ -12,7 +12,9 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
 
 import java.util.List;
 
-
+/**
+ * @author wenxuan.wang
+ */
 public class MysqlPagingPlugin extends PluginAdapter {
 
     @Override

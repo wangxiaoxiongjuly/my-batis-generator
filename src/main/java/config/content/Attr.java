@@ -1,14 +1,17 @@
-package generatorConfig.content;
+package config.content;
 
+/**
+ * @author wenxuan.wang
+ */
 public class Attr {
     private Attr() {
     }
 
     public static final String ID = "id";
-    public static final String PARAMETERTYPE = "parameterType";
+    public static final String PARAMETER_TYPE = "parameterType";
     public static final String PREFIX = "prefix";
     public static final String SUFFIX = "suffix";
-    public static final String SUFFIXOVERRIDES = "suffixOverrides";
+    public static final String SUFFIX_OVERRIDES = "suffixOverrides";
     public static final String COLLECTION = "collection";
     public static final String INDEX = "index";
     public static final String ITEM = "item";

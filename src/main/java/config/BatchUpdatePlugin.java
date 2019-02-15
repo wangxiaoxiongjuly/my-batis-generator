@@ -1,10 +1,11 @@
-package generatorConfig;
+package config;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import generatorConfig.content.*;
+import config.content.*;
+import config.exception.GenterException;
 import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
@@ -15,6 +16,9 @@ import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
+/**
+ * @author wenxuan.wang
+ */
 public class BatchUpdatePlugin extends PluginAdapter {
 
     @Override
@@ -96,7 +100,7 @@ public class BatchUpdatePlugin extends PluginAdapter {
             if (introspectedTable.getRules().generatePrimaryKeyClass()) {
                 paramListType = new FullyQualifiedJavaType(introspectedTable.getPrimaryKeyType());
             } else {
-                throw new RuntimeException("批量更新语句生成失败");
+                throw new GenterException("批量更新语句生成失败");
             }
         }
         paramType.addTypeArgument(paramListType);
@@ -126,7 +130,7 @@ public class BatchUpdatePlugin extends PluginAdapter {
         if (introspectedTable.getRules().generateExampleClass()){
             paramListType = new FullyQualifiedJavaType(introspectedTable.getExampleType());
         } else {
-            throw new RuntimeException("批量更新Example语句生成失败");
+            throw new GenterException("批量更新Example语句生成失败");
         }
         paramType.addTypeArgument(paramListType);
 
@@ -145,7 +149,7 @@ public class BatchUpdatePlugin extends PluginAdapter {
 
         XmlElement updBatchElement = new XmlElement(Ele.UPDATE);
         updBatchElement.addAttribute(new Attribute(Attr.ID, Function.UPDATE_BATCH_BY_PRIMARY_KEY_SELECTIVE));
-        updBatchElement.addAttribute(new Attribute(Attr.PARAMETERTYPE, JavaType.LIST));
+        updBatchElement.addAttribute(new Attribute(Attr.PARAMETER_TYPE, JavaType.LIST));
 
         XmlElement foreach = new XmlElement(Ele.FOREACH);
         foreach.addAttribute(new Attribute(Attr.COLLECTION, Text.LIST));
@@ -161,7 +165,7 @@ public class BatchUpdatePlugin extends PluginAdapter {
             if (!columnName.toUpperCase().equalsIgnoreCase(keyColumn)) {
                 XmlElement ifxml = new XmlElement(Ele.IF);
                 ifxml.addAttribute(new Attribute(Attr.TEST, "item." + introspectedColumn.getJavaProperty() + "!=null"));
-                ifxml.addElement(new TextElement(columnName + "=#{item." + introspectedColumn.getJavaProperty() + ",jdbcType=" + introspectedColumn.getJdbcTypeName() + "},"));
+                ifxml.addElement(new TextElement(columnName + "=#{item." + introspectedColumn.getJavaProperty() + ","+Text.JDBC_TYPE+"=" + introspectedColumn.getJdbcTypeName() + "},"));
                 trim1Element.addElement(ifxml);
             }
         }
@@ -170,7 +174,7 @@ public class BatchUpdatePlugin extends PluginAdapter {
         foreach.addElement(new TextElement("where "));
         int index = 0;
         for (IntrospectedColumn i : introspectedTable.getPrimaryKeyColumns()) {
-            foreach.addElement(new TextElement((index > 0 ? " AND " : "") + i.getActualColumnName() + " = #{item." + i.getJavaProperty() + ",jdbcType=" + i.getJdbcTypeName() + "}"));
+            foreach.addElement(new TextElement((index > 0 ? " AND " : "") + i.getActualColumnName() + " = #{item." + i.getJavaProperty() + ","+Text.JDBC_TYPE+"=" + i.getJdbcTypeName() + "}"));
             index++;
         }
         foreach.addElement(new TextElement(Text.SEMICOLON));
@@ -184,7 +188,7 @@ public class BatchUpdatePlugin extends PluginAdapter {
 
         XmlElement updBatchElement = new XmlElement(Ele.UPDATE);
         updBatchElement.addAttribute(new Attribute(Attr.ID, Function.UPDATE_BATCH_BY_EXAMPLE_SELECTIVE));
-        updBatchElement.addAttribute(new Attribute(Attr.PARAMETERTYPE, JavaType.LIST));
+        updBatchElement.addAttribute(new Attribute(Attr.PARAMETER_TYPE, JavaType.LIST));
 
         XmlElement foreach = new XmlElement(Ele.FOREACH);
         foreach.addAttribute(new Attribute(Attr.COLLECTION, Text.LIST));
@@ -199,7 +203,7 @@ public class BatchUpdatePlugin extends PluginAdapter {
             columnName = introspectedColumn.getActualColumnName();
             XmlElement ifxml = new XmlElement(Ele.IF);
             ifxml.addAttribute(new Attribute(Attr.TEST, "item.record." + introspectedColumn.getJavaProperty() + "!=null"));
-            ifxml.addElement(new TextElement(columnName + "=#{item.record." + introspectedColumn.getJavaProperty() + ",jdbcType=" + introspectedColumn.getJdbcTypeName() + "},"));
+            ifxml.addElement(new TextElement(columnName + "=#{item.record." + introspectedColumn.getJavaProperty() + ","+Text.JDBC_TYPE+"=" + introspectedColumn.getJdbcTypeName() + "},"));
             trim1Element.addElement(ifxml);
         }
         foreach.addElement(trim1Element);
@@ -229,7 +233,7 @@ public class BatchUpdatePlugin extends PluginAdapter {
         XmlElement trim = new XmlElement(Ele.TRIM);
         trim.addAttribute(new Attribute(Attr.PREFIX,Text.LEFT_BRACKET));
         trim.addAttribute(new Attribute(Attr.SUFFIX,Text.RIGHT_BRACKET));
-        trim.addAttribute(new Attribute(Attr.SUFFIXOVERRIDES,Text.AND));
+        trim.addAttribute(new Attribute(Attr.SUFFIX_OVERRIDES,Text.AND));
 
 
         XmlElement foreach = new XmlElement(Ele.FOREACH);

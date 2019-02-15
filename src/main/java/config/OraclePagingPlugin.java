@@ -1,8 +1,8 @@
-package generatorConfig;
+package config;
 
-import generatorConfig.content.Attr;
-import generatorConfig.content.Ele;
-import generatorConfig.content.Function;
+import config.content.Attr;
+import config.content.Ele;
+import config.content.Function;
 import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
@@ -15,8 +15,7 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
 import java.util.List;
 
 /**
- * @author fangwenlong
- * @date 2016-4-6
+ * @author wenxuan.wang
  */
 public class OraclePagingPlugin extends PluginAdapter {
 	

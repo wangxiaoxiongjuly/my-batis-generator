@@ -1,5 +1,6 @@
-package generatorConfig;
+package config;
 
+import jdk.nashorn.internal.runtime.logging.Logger;
 import org.mybatis.generator.api.*;
 import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
@@ -12,6 +13,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @author wenxuan.wang
+ */
+@Logger
 public class CommentPlugin extends PluginAdapter {
     private static final String AUTHOR = "modelClassAuthor";
 
