@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import generatorConfig.content.*;
 import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
@@ -28,7 +29,7 @@ public class BatchUpdatePlugin extends PluginAdapter {
         Field recordField = new Field();
         recordField.setVisibility(JavaVisibility.PROTECTED);
         recordField.setType(new FullyQualifiedJavaType(introspectedTable.getBaseRecordType()));
-        recordField.setName("record");
+        recordField.setName(Text.RECORD);
         commentGenerator.addFieldComment(recordField, introspectedTable);
         topLevelClass.addField(recordField);
 
@@ -85,7 +86,7 @@ public class BatchUpdatePlugin extends PluginAdapter {
         FullyQualifiedJavaType ibsreturnType = FullyQualifiedJavaType.getIntInstance();
         ibsmethod.setReturnType(ibsreturnType);
 
-        ibsmethod.setName("updateBatchByPrimaryKeySelective");
+        ibsmethod.setName(Function.UPDATE_BATCH_BY_PRIMARY_KEY_SELECTIVE);
 
         FullyQualifiedJavaType paramType = FullyQualifiedJavaType.getNewListInstance();
         FullyQualifiedJavaType paramListType;
@@ -100,7 +101,7 @@ public class BatchUpdatePlugin extends PluginAdapter {
         }
         paramType.addTypeArgument(paramListType);
 
-        ibsmethod.addParameter(new Parameter(paramType, "records"));
+        ibsmethod.addParameter(new Parameter(paramType, Text.RECORDS));
 
         inter.addImportedTypes(importedTypes);
         inter.addMethod(ibsmethod);
@@ -118,7 +119,7 @@ public class BatchUpdatePlugin extends PluginAdapter {
         FullyQualifiedJavaType ibsreturnType = FullyQualifiedJavaType.getIntInstance();
         ibsmethod.setReturnType(ibsreturnType);
 
-        ibsmethod.setName("updateBatchByExampleSelective");
+        ibsmethod.setName(Function.UPDATE_BATCH_BY_EXAMPLE_SELECTIVE);
 
         FullyQualifiedJavaType paramType = FullyQualifiedJavaType.getNewListInstance();
         FullyQualifiedJavaType paramListType;
@@ -129,7 +130,7 @@ public class BatchUpdatePlugin extends PluginAdapter {
         }
         paramType.addTypeArgument(paramListType);
 
-        ibsmethod.addParameter(new Parameter(paramType, "list"));
+        ibsmethod.addParameter(new Parameter(paramType, Text.LIST));
 
         inter.addImportedTypes(importedTypes);
         inter.addMethod(ibsmethod);
@@ -142,24 +143,24 @@ public class BatchUpdatePlugin extends PluginAdapter {
         }
         String keyColumn = (introspectedTable.getPrimaryKeyColumns().get(0)).getActualColumnName();
 
-        XmlElement insertBatchElement = new XmlElement("update");
-        insertBatchElement.addAttribute(new Attribute("id", "updateBatchByPrimaryKeySelective"));
-        insertBatchElement.addAttribute(new Attribute("parameterType", "java.util.List"));
+        XmlElement updBatchElement = new XmlElement(Ele.UPDATE);
+        updBatchElement.addAttribute(new Attribute(Attr.ID, Function.UPDATE_BATCH_BY_PRIMARY_KEY_SELECTIVE));
+        updBatchElement.addAttribute(new Attribute(Attr.PARAMETERTYPE, JavaType.LIST));
 
-        XmlElement foreach = new XmlElement("foreach");
-        foreach.addAttribute(new Attribute("collection", "list"));
-        foreach.addAttribute(new Attribute("item", "item"));
-        foreach.addAttribute(new Attribute("index", "index"));
+        XmlElement foreach = new XmlElement(Ele.FOREACH);
+        foreach.addAttribute(new Attribute(Attr.COLLECTION, Text.LIST));
+        foreach.addAttribute(new Attribute(Attr.ITEM, Text.ITEM));
+        foreach.addAttribute(new Attribute(Attr.INDEX, Text.INDEX));
 
         foreach.addElement(new TextElement("update " + introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime()));
 
-        XmlElement trim1Element = new XmlElement("set");
+        XmlElement trim1Element = new XmlElement(Ele.SET);
         String columnName;
         for (IntrospectedColumn introspectedColumn : columns) {
             columnName = introspectedColumn.getActualColumnName();
             if (!columnName.toUpperCase().equalsIgnoreCase(keyColumn)) {
-                XmlElement ifxml = new XmlElement("if");
-                ifxml.addAttribute(new Attribute("test", "item." + introspectedColumn.getJavaProperty() + "!=null"));
+                XmlElement ifxml = new XmlElement(Ele.IF);
+                ifxml.addAttribute(new Attribute(Attr.TEST, "item." + introspectedColumn.getJavaProperty() + "!=null"));
                 ifxml.addElement(new TextElement(columnName + "=#{item." + introspectedColumn.getJavaProperty() + ",jdbcType=" + introspectedColumn.getJdbcTypeName() + "},"));
                 trim1Element.addElement(ifxml);
             }
@@ -172,93 +173,93 @@ public class BatchUpdatePlugin extends PluginAdapter {
             foreach.addElement(new TextElement((index > 0 ? " AND " : "") + i.getActualColumnName() + " = #{item." + i.getJavaProperty() + ",jdbcType=" + i.getJdbcTypeName() + "}"));
             index++;
         }
-        foreach.addElement(new TextElement(";"));
-        insertBatchElement.addElement(foreach);
+        foreach.addElement(new TextElement(Text.SEMICOLON));
+        updBatchElement.addElement(foreach);
 
-        document.getRootElement().addElement(insertBatchElement);
+        document.getRootElement().addElement(updBatchElement);
     }
 
     private void addBatchUpdateExampleXml(Document document, IntrospectedTable introspectedTable){
         List<IntrospectedColumn> columns = introspectedTable.getAllColumns();
 
-        XmlElement insertBatchElement = new XmlElement("update");
-        insertBatchElement.addAttribute(new Attribute("id", "updateBatchByExampleSelective"));
-        insertBatchElement.addAttribute(new Attribute("parameterType", "java.util.List"));
+        XmlElement updBatchElement = new XmlElement(Ele.UPDATE);
+        updBatchElement.addAttribute(new Attribute(Attr.ID, Function.UPDATE_BATCH_BY_EXAMPLE_SELECTIVE));
+        updBatchElement.addAttribute(new Attribute(Attr.PARAMETERTYPE, JavaType.LIST));
 
-        XmlElement foreach = new XmlElement("foreach");
-        foreach.addAttribute(new Attribute("collection", "list"));
-        foreach.addAttribute(new Attribute("item", "item"));
-        foreach.addAttribute(new Attribute("index", "index"));
+        XmlElement foreach = new XmlElement(Ele.FOREACH);
+        foreach.addAttribute(new Attribute(Attr.COLLECTION, Text.LIST));
+        foreach.addAttribute(new Attribute(Attr.ITEM,Text.ITEM));
+        foreach.addAttribute(new Attribute(Attr.INDEX, Text.INDEX));
 
         foreach.addElement(new TextElement("update " + introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime()));
 
-        XmlElement trim1Element = new XmlElement("set");
+        XmlElement trim1Element = new XmlElement(Ele.SET);
         String columnName;
         for (IntrospectedColumn introspectedColumn : columns) {
             columnName = introspectedColumn.getActualColumnName();
-            XmlElement ifxml = new XmlElement("if");
-            ifxml.addAttribute(new Attribute("test", "item.record." + introspectedColumn.getJavaProperty() + "!=null"));
+            XmlElement ifxml = new XmlElement(Ele.IF);
+            ifxml.addAttribute(new Attribute(Attr.TEST, "item.record." + introspectedColumn.getJavaProperty() + "!=null"));
             ifxml.addElement(new TextElement(columnName + "=#{item.record." + introspectedColumn.getJavaProperty() + ",jdbcType=" + introspectedColumn.getJdbcTypeName() + "},"));
             trim1Element.addElement(ifxml);
         }
         foreach.addElement(trim1Element);
 
-        XmlElement ifExampleCauseEmpty = new XmlElement("if");
-        ifExampleCauseEmpty.addAttribute(new Attribute("test","_parameter != null"));
+        XmlElement ifExampleCauseEmpty = new XmlElement(Ele.IF);
+        ifExampleCauseEmpty.addAttribute(new Attribute(Attr.TEST,"_parameter != null"));
         ifExampleCauseEmpty.addElement(getExampleClause());
         foreach.addElement(ifExampleCauseEmpty);
 
-        foreach.addElement(new TextElement(";"));
-        insertBatchElement.addElement(foreach);
+        foreach.addElement(new TextElement(Text.SEMICOLON));
+        updBatchElement.addElement(foreach);
 
-        document.getRootElement().addElement(insertBatchElement);
+        document.getRootElement().addElement(updBatchElement);
     }
 
     private XmlElement getExampleClause(){
-        XmlElement sqlExampleCauseEmpty = new XmlElement("where");
+        XmlElement sqlExampleCauseEmpty = new XmlElement(Ele.WHERE);
 
-        XmlElement forEle = new XmlElement("foreach");
-        forEle.addAttribute(new Attribute("collection","item.oredCriteria"));
-        forEle.addAttribute(new Attribute("item","criteria"));
-        forEle.addAttribute(new Attribute("separator","or"));
+        XmlElement forEle = new XmlElement(Ele.FOREACH);
+        forEle.addAttribute(new Attribute(Attr.COLLECTION,"item.oredCriteria"));
+        forEle.addAttribute(new Attribute(Attr.ITEM,"criteria"));
+        forEle.addAttribute(new Attribute(Attr.SEPARATOR,Text.OR));
 
-        XmlElement ifEle = new XmlElement("if");
-        ifEle.addAttribute(new Attribute("test","criteria.valid"));
+        XmlElement ifEle = new XmlElement(Ele.IF);
+        ifEle.addAttribute(new Attribute(Attr.TEST,"criteria.valid"));
 
-        XmlElement trim = new XmlElement("trim");
-        trim.addAttribute(new Attribute("prefix","("));
-        trim.addAttribute(new Attribute("suffix",")"));
-        trim.addAttribute(new Attribute("prefixOverrides","and"));
+        XmlElement trim = new XmlElement(Ele.TRIM);
+        trim.addAttribute(new Attribute(Attr.PREFIX,Text.LEFT_BRACKET));
+        trim.addAttribute(new Attribute(Attr.SUFFIX,Text.RIGHT_BRACKET));
+        trim.addAttribute(new Attribute(Attr.SUFFIXOVERRIDES,Text.AND));
 
 
-        XmlElement foreach = new XmlElement("foreach");
-        foreach.addAttribute(new Attribute("collection","criteria.criteria"));
-        foreach.addAttribute(new Attribute("item","criterion"));
+        XmlElement foreach = new XmlElement(Ele.FOREACH);
+        foreach.addAttribute(new Attribute(Attr.COLLECTION,"criteria.criteria"));
+        foreach.addAttribute(new Attribute(Attr.ITEM,"criterion"));
 
-        XmlElement choose = new XmlElement("choose");
+        XmlElement choose = new XmlElement(Ele.CHOOSE);
 
-        XmlElement when1 = new XmlElement("when");
-        when1.addAttribute(new Attribute("test","criterion.noValue"));
+        XmlElement when1 = new XmlElement(Ele.WHEN);
+        when1.addAttribute(new Attribute(Attr.TEST,"criterion.noValue"));
         when1.addElement(new TextElement("and ${criterion.condition}"));
 
-        XmlElement when2 = new XmlElement("when");
-        when2.addAttribute(new Attribute("test","criterion.singleValue"));
+        XmlElement when2 = new XmlElement(Ele.WHEN);
+        when2.addAttribute(new Attribute(Attr.TEST,"criterion.singleValue"));
         when2.addElement(new TextElement("and ${criterion.condition} #{criterion.value}"));
 
-        XmlElement when3 = new XmlElement("when");
-        when3.addAttribute(new Attribute("test","criterion.betweenValue"));
+        XmlElement when3 = new XmlElement(Ele.WHEN);
+        when3.addAttribute(new Attribute(Attr.TEST,"criterion.betweenValue"));
         when3.addElement(new TextElement("and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}"));
 
-        XmlElement when4 = new XmlElement("when");
-        when4.addAttribute(new Attribute("test","criterion.listValue"));
+        XmlElement when4 = new XmlElement(Ele.WHEN);
+        when4.addAttribute(new Attribute(Attr.TEST,"criterion.listValue"));
         when4.addElement(new TextElement("and ${criterion.condition}"));
 
-        XmlElement when4foreach = new XmlElement("foreach");
-        when4foreach.addAttribute(new Attribute("collection","criterion.value"));
-        when4foreach.addAttribute(new Attribute("item","listItem"));
-        when4foreach.addAttribute(new Attribute("open","("));
-        when4foreach.addAttribute(new Attribute("close",")"));
-        when4foreach.addAttribute(new Attribute("separator",","));
+        XmlElement when4foreach = new XmlElement(Ele.FOREACH);
+        when4foreach.addAttribute(new Attribute(Attr.COLLECTION,"criterion.value"));
+        when4foreach.addAttribute(new Attribute(Attr.ITEM,"listItem"));
+        when4foreach.addAttribute(new Attribute(Attr.OPEN,Text.LIST));
+        when4foreach.addAttribute(new Attribute(Attr.CLOSE,Text.RIGHT_BRACKET));
+        when4foreach.addAttribute(new Attribute(Attr.SEPARATOR,Text.COMMA));
         when4foreach.addElement(new TextElement("#{listItem}"));
 
         when4.addElement(when4foreach);

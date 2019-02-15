@@ -1,5 +1,7 @@
 package generatorConfig;
 
+import generatorConfig.content.Attr;
+import generatorConfig.content.Ele;
 import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
@@ -27,8 +29,8 @@ public class MysqlPagingPlugin extends PluginAdapter {
 
     private void appendPageInfoAfterSelectByExampleXml(XmlElement element, IntrospectedTable introspectedTable) {
 
-        XmlElement pageEl = new XmlElement("if");
-        pageEl.addAttribute(new Attribute("test", "limitOffset >= 0"));
+        XmlElement pageEl = new XmlElement(Ele.IF);
+        pageEl.addAttribute(new Attribute(Attr.TEST, "limitOffset >= 0"));
         pageEl.addElement(new TextElement(" limit ${limitOffset} , ${limitSize}"));
         element.addElement(pageEl);
     }

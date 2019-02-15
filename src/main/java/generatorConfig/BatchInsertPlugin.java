@@ -4,6 +4,8 @@ package generatorConfig;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import generatorConfig.content.*;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
@@ -59,7 +61,7 @@ public class BatchInsertPlugin extends PluginAdapter {
         FullyQualifiedJavaType ibsreturnType = FullyQualifiedJavaType.getIntInstance();
         ibsmethod.setReturnType(ibsreturnType);
 
-        ibsmethod.setName("insertBatchSelective");
+        ibsmethod.setName(Function.INSERT_BATCH_SELECTIVE);
 
         FullyQualifiedJavaType paramType = FullyQualifiedJavaType.getNewListInstance();
         FullyQualifiedJavaType paramListType;
@@ -74,7 +76,7 @@ public class BatchInsertPlugin extends PluginAdapter {
         }
         paramType.addTypeArgument(paramListType);
 
-        ibsmethod.addParameter(new Parameter(paramType, "records"));
+        ibsmethod.addParameter(new Parameter(paramType, Text.RECORDS));
 
         inter.addImportedTypes(importedTypes);
         inter.addMethod(ibsmethod);
@@ -89,34 +91,34 @@ public class BatchInsertPlugin extends PluginAdapter {
         }
 
         //insert方法配置
-        XmlElement insertBatchElement = new XmlElement("insert");
-        insertBatchElement.addAttribute(new Attribute("id", "insertBatchSelective"));
-        insertBatchElement.addAttribute(new Attribute("parameterType", "java.util.List"));
+        XmlElement insertBatchElement = new XmlElement(Ele.INSERT);
+        insertBatchElement.addAttribute(new Attribute(Attr.ID, Function.INSERT_BATCH_SELECTIVE));
+        insertBatchElement.addAttribute(new Attribute(Attr.PARAMETERTYPE, JavaType.LIST));
 
-        XmlElement javaPropertyAndDbType = new XmlElement("trim");
-        javaPropertyAndDbType.addAttribute(new Attribute("prefix", " ("));
-        javaPropertyAndDbType.addAttribute(new Attribute("suffix", ")"));
-        javaPropertyAndDbType.addAttribute(new Attribute("suffixOverrides", ","));
+        XmlElement javaPropertyAndDbType = new XmlElement(Ele.TRIM);
+        javaPropertyAndDbType.addAttribute(new Attribute(Attr.PREFIX, Text.LEFT_BRACKET));
+        javaPropertyAndDbType.addAttribute(new Attribute(Attr.SUFFIX, Text.RIGHT_BRACKET));
+        javaPropertyAndDbType.addAttribute(new Attribute(Attr.SUFFIXOVERRIDES, Text.COMMA));
 
-        XmlElement trim1Element = new XmlElement("trim");
-        trim1Element.addAttribute(new Attribute("prefix", "("));
-        trim1Element.addAttribute(new Attribute("suffix", ")"));
-        trim1Element.addAttribute(new Attribute("suffixOverrides", ","));
+        XmlElement trim1Element = new XmlElement(Ele.TRIM);
+        trim1Element.addAttribute(new Attribute(Attr.PREFIX, Text.LEFT_BRACKET));
+        trim1Element.addAttribute(new Attribute(Attr.SUFFIX, Text.RIGHT_BRACKET));
+        trim1Element.addAttribute(new Attribute(Attr.SUFFIXOVERRIDES, Text.COMMA));
 
-        XmlElement foreachElement = new XmlElement("foreach");
-        foreachElement.addAttribute(new Attribute("collection", "list"));
-        foreachElement.addAttribute(new Attribute("index", "index"));
-        foreachElement.addAttribute(new Attribute("item", "item"));
+        XmlElement foreachElement = new XmlElement(Ele.FOREACH);
+        foreachElement.addAttribute(new Attribute(Attr.COLLECTION, Text.LIST));
+        foreachElement.addAttribute(new Attribute(Attr.INDEX, Text.INDEX));
+        foreachElement.addAttribute(new Attribute(Attr.ITEM, Text.ITEM));
 
         for (IntrospectedColumn introspectedColumn : columns) {
             String columnName = introspectedColumn.getActualColumnName();
             if (!columnName.equalsIgnoreCase(incrementField)){
-                XmlElement iftest = new XmlElement("if");
-                iftest.addAttribute(new Attribute("test", "item." + introspectedColumn.getJavaProperty() + "!=null"));
+                XmlElement iftest = new XmlElement(Ele.IF);
+                iftest.addAttribute(new Attribute(Attr.TEST, "item." + introspectedColumn.getJavaProperty() + "!=null"));
                 iftest.addElement(new TextElement(columnName + ","));
                 trim1Element.addElement(iftest);
-                XmlElement trimiftest = new XmlElement("if");
-                trimiftest.addAttribute(new Attribute("test", "item." + introspectedColumn.getJavaProperty() + "!=null"));
+                XmlElement trimiftest = new XmlElement(Ele.IF);
+                trimiftest.addAttribute(new Attribute(Attr.TEST, "item." + introspectedColumn.getJavaProperty() + "!=null"));
                 trimiftest.addElement(new TextElement("#{item." + introspectedColumn.getJavaProperty() + ",jdbcType=" + introspectedColumn.getJdbcTypeName() + "},"));
                 javaPropertyAndDbType.addElement(trimiftest);
             }
@@ -128,7 +130,7 @@ public class BatchInsertPlugin extends PluginAdapter {
         foreachElement.addElement(trim1Element);
         foreachElement.addElement(new TextElement(" values "));
         foreachElement.addElement(javaPropertyAndDbType);
-        foreachElement.addElement(new TextElement(";"));
+        foreachElement.addElement(new TextElement(Text.SEMICOLON));
 
         document.getRootElement().addElement(insertBatchElement);
     }

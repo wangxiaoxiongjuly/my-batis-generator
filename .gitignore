@@ -17,5 +17,6 @@ t/
 /**/.project
 /**/.classpath
 .*
+target/*
 
 /bin/

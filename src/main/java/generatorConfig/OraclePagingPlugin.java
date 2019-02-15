@@ -1,5 +1,8 @@
 package generatorConfig;
 
+import generatorConfig.content.Attr;
+import generatorConfig.content.Ele;
+import generatorConfig.content.Function;
 import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
@@ -57,12 +60,12 @@ public class OraclePagingPlugin extends PluginAdapter {
 		} catch (Exception e) {
 		}
     	
-    	XmlElement pageStart = new XmlElement("include");
-		pageStart.addAttribute(new Attribute("refid", "OracleDialectPrefix"));
+    	XmlElement pageStart = new XmlElement(Ele.INCLUDE);
+		pageStart.addAttribute(new Attribute(Attr.REFID, Function.ORACLE_DIALECT_PREFIX));
 		element.getElements().add(0, pageStart);
 
-		XmlElement isNotNullElement = new XmlElement("include");
-		isNotNullElement.addAttribute(new Attribute("refid", "OracleDialectSuffix"));
+		XmlElement isNotNullElement = new XmlElement(Ele.INCLUDE);
+		isNotNullElement.addAttribute(new Attribute(Attr.REFID, Function.ORACLE_DIALECT_SUFFIX));
 		element.getElements().add(isNotNullElement);
     	
     	return super.sqlMapUpdateByExampleWithoutBLOBsElementGenerated(element, introspectedTable);
@@ -73,19 +76,19 @@ public class OraclePagingPlugin extends PluginAdapter {
 		XmlElement parentElement = document.getRootElement();
 
 		// 产生分页语句前半部分
-		XmlElement paginationPrefixElement = new XmlElement("sql");
-		paginationPrefixElement.addAttribute(new Attribute("id", "OracleDialectPrefix"));
-		XmlElement pageStart = new XmlElement("if");
-		pageStart.addAttribute(new Attribute("test", "limitOffset >= 0"));
+		XmlElement paginationPrefixElement = new XmlElement(Ele.SQL);
+		paginationPrefixElement.addAttribute(new Attribute(Attr.ID, Function.ORACLE_DIALECT_PREFIX));
+		XmlElement pageStart = new XmlElement(Ele.IF);
+		pageStart.addAttribute(new Attribute(Attr.TEST, "limitOffset >= 0"));
 		pageStart.addElement(new TextElement("select * from ( select row_.*, rownum rownum_ from ( "));
 		paginationPrefixElement.addElement(pageStart);
 		parentElement.addElement(paginationPrefixElement);
 
 		// 产生分页语句后半部分
-		XmlElement paginationSuffixElement = new XmlElement("sql");
-		paginationSuffixElement.addAttribute(new Attribute("id", "OracleDialectSuffix"));
-		XmlElement pageEnd = new XmlElement("if");
-		pageEnd.addAttribute(new Attribute("test", "limitOffset >= 0"));
+		XmlElement paginationSuffixElement = new XmlElement(Ele.SQL);
+		paginationSuffixElement.addAttribute(new Attribute(Attr.ID, Function.ORACLE_DIALECT_SUFFIX));
+		XmlElement pageEnd = new XmlElement(Ele.IF);
+		pageEnd.addAttribute(new Attribute(Attr.TEST, "limitOffset >= 0"));
 		pageEnd.addElement(new TextElement("<![CDATA[ ) row_ ) where rownum_ > #{begin} and rownum_ <= #{end} ]]>"));
 		paginationSuffixElement.addElement(pageEnd);
 		parentElement.addElement(paginationSuffixElement);
