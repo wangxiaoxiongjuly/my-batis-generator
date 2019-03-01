@@ -64,7 +64,7 @@
         </javaTypeResolver>
 
         <!-- targetProject:生成PO类的位置 -->
-        <javaModelGenerator targetPackage="auto"
+        <javaModelGenerator targetPackage="${poPath}"
                             targetProject="./src/main/java">
             <!-- enableSubPackages:是否让schema作为包的后缀 -->
             <property name="enableSubPackages" value="false" />
@@ -73,7 +73,7 @@
         </javaModelGenerator>
 
         <!-- targetProject:mapper映射文件生成的位置 -->
-        <sqlMapGenerator targetPackage="auto"
+        <sqlMapGenerator targetPackage="${mapperPath}"
                          targetProject="./src/main/java">
             <!-- enableSubPackages:是否让schema作为包的后缀 -->
             <property name="enableSubPackages" value="false" />
@@ -81,7 +81,7 @@
 
         <!-- targetPackage：mapper接口生成的位置 -->
         <javaClientGenerator type="XMLMAPPER"
-                             targetPackage="auto"
+                             targetPackage="${sqlMapPath}"
                              targetProject="./src/main/java">
             <property name="enableSubPackages" value="false" />
         </javaClientGenerator>
