@@ -22,12 +22,13 @@ import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
 /**
- * @author wenxuan.wang
+ * 批量插入插件
+ * @author wenxuan.wong
  */
 public class BatchInsertPlugin extends PluginAdapter {
 
     /**
-     * 在接口创建方法
+     * 在接口创建新方法
      */
     @Override
     public boolean clientGenerated(Interface inter, TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {

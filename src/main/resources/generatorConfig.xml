@@ -14,7 +14,7 @@
 
 
         <!-- like插件  -->
-        <plugin type="org.mybatis.generator.plugins.CaseInsensitiveLikePlugin"/>
+        <plugin type="config.CaseInsensitiveLikePlugin"/>
         <!-- 序列化插件  -->
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
         <!-- 重命名插件 Example -->
@@ -31,6 +31,8 @@
         <plugin type="config.BatchInsertPlugin" />
         <!-- 批量修改插件 -->
         <plugin type="config.BatchUpdatePlugin" />
+        <!-- InsertPrimaryPlugin -->
+        <plugin type="config.InsertPrimaryPlugin"/>
 
         <plugin type="${dateBasePlugin}" />
         <plugin type="config.CommentPlugin">

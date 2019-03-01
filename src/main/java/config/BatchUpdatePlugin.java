@@ -17,6 +17,7 @@ import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
 /**
+ * 批量更新插件
  * @author wenxuan.wang
  */
 public class BatchUpdatePlugin extends PluginAdapter {

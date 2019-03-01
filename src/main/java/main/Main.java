@@ -1,4 +1,4 @@
-package config;
+package main;
 
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.Configuration;
