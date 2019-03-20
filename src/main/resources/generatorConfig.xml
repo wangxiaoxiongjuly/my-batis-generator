@@ -14,7 +14,7 @@
 
 
         <!-- like插件  -->
-        <plugin type="config.CaseInsensitiveLikePlugin"/>
+        <plugin type="org.mybatis.generator.plugins.CaseInsensitiveLikePlugin"/>
         <!-- 序列化插件  -->
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
         <!-- 重命名插件 Example -->
