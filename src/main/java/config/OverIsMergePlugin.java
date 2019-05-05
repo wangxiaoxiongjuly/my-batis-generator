@@ -8,9 +8,9 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 /**
- * @author wenxuan.wang
+ * @author wenxuan.wong
  */
-public class OverIsMergeablePlugin extends PluginAdapter {
+public class OverIsMergePlugin extends PluginAdapter {
     @Override
     public boolean validate(List<String> warnings) {
         return true;

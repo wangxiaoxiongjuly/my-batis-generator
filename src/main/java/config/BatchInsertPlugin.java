@@ -1,12 +1,11 @@
 package config;
 
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import config.content.*;
-import config.exception.GenterException;
+import config.exception.GenException;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
@@ -23,6 +22,7 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
 
 /**
  * 批量插入插件
+ *
  * @author wenxuan.wong
  */
 public class BatchInsertPlugin extends PluginAdapter {
@@ -69,13 +69,13 @@ public class BatchInsertPlugin extends PluginAdapter {
 
         FullyQualifiedJavaType paramType = FullyQualifiedJavaType.getNewListInstance();
         FullyQualifiedJavaType paramListType;
-        if (introspectedTable.getRules().generateBaseRecordClass()){
+        if (introspectedTable.getRules().generateBaseRecordClass()) {
             paramListType = new FullyQualifiedJavaType(introspectedTable.getBaseRecordType());
         } else {
             if (introspectedTable.getRules().generatePrimaryKeyClass()) {
                 paramListType = new FullyQualifiedJavaType(introspectedTable.getPrimaryKeyType());
             } else {
-                throw new GenterException("生成失败");
+                throw new GenException("生成失败");
             }
         }
         paramType.addTypeArgument(paramListType);
@@ -116,7 +116,7 @@ public class BatchInsertPlugin extends PluginAdapter {
 
         for (IntrospectedColumn introspectedColumn : columns) {
             String columnName = introspectedColumn.getActualColumnName();
-            if (!columnName.equalsIgnoreCase(incrementField)){
+            if (!columnName.equalsIgnoreCase(incrementField)) {
                 XmlElement iftest = new XmlElement(Ele.IF);
                 iftest.addAttribute(new Attribute(Attr.TEST, "item." + introspectedColumn.getJavaProperty() + "!=null"));
                 iftest.addElement(new TextElement(columnName + ","));

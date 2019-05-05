@@ -1,9 +1,9 @@
 package config.exception;
 
 /**
- * @author wenxuan.wang
+ * @author wenxuan.wong
  */
-public class GenterException extends RuntimeException{
+public class GenException extends RuntimeException {
     /**
      * Constructs a new runtime exception with the specified detail message.
      * The cause is not initialized, and may subsequently be initialized by a
@@ -12,7 +12,7 @@ public class GenterException extends RuntimeException{
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public GenterException(String message) {
+    public GenException(String message) {
         super(message);
     }
 }

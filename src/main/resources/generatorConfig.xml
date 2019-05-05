@@ -25,7 +25,7 @@
         <!-- 重命名主键插件  -->
         <plugin type="config.RenameExampleAndPrimaryKeyPlugin" />
         <!-- 文件覆盖插件 -->
-        <plugin type="config.OverIsMergeablePlugin" />
+        <plugin type="config.OverIsMergePlugin" />
 
         <!-- 批量添加插件 -->
         <plugin type="config.BatchInsertPlugin" />

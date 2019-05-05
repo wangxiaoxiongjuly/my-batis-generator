@@ -13,7 +13,7 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
 import java.util.List;
 
 /**
- * @author wenxuan.wang
+ * @author wenxuan.wong
  */
 public class MysqlPagingPlugin extends PluginAdapter {
 
@@ -102,7 +102,7 @@ public class MysqlPagingPlugin extends PluginAdapter {
      * This plugin is always valid - no properties are required
      */
     @Override
-    public boolean validate(List<String> warnings){
+    public boolean validate(List<String> warnings) {
         return true;
     }
 }

@@ -1,7 +1,7 @@
 package config.content;
 
 /**
- * @author wenxuan.wang
+ * @author wenxuan.wong
  */
 public class Ele {
     private Ele() {

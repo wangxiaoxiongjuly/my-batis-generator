@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @author wenxuan.wang
+ * @author wenxuan.wong
  */
 @Logger
 public class CommentPlugin extends PluginAdapter {
@@ -50,7 +50,8 @@ public class CommentPlugin extends PluginAdapter {
                 remarks = rs.getString("REMARKS");
             }
             closeConnection(connection, rs);
-        } catch (SQLException e) {}
+        } catch (SQLException e) {
+        }
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-M-d");
         topLevelClass.addJavaDocLine("/**");
@@ -78,12 +79,14 @@ public class CommentPlugin extends PluginAdapter {
         if (null != rs) {
             try {
                 rs.close();
-            } catch (SQLException e) {}
+            } catch (SQLException e) {
+            }
         }
         if (connection != null) {
             try {
                 connection.close();
-            } catch (SQLException e) {}
+            } catch (SQLException e) {
+            }
         }
 
     }
