@@ -22,7 +22,7 @@ public class OraclePagingPlugin extends PluginAdapter {
     private void updateSchema(TopLevelClass topLevelClass) {
         FullyQualifiedJavaType fullyQualifiedJavaType = topLevelClass.getType();
         String basePackage = fullyQualifiedJavaType.getPackageName();
-        basePackage = basePackage.replace(".zrliqpower", "");
+        basePackage = basePackage.replace("", "");
 
         try {
             java.lang.reflect.Field packageField = fullyQualifiedJavaType.getClass().getDeclaredField("packageName");
@@ -51,7 +51,7 @@ public class OraclePagingPlugin extends PluginAdapter {
         // 临时去掉DS的schema
         TextElement tableNameText = (TextElement) element.getElements().get(3);
         String tableName = tableNameText.getContent();
-        tableName = tableName.replace("ZRLIQPOWER.", "");
+        tableName = tableName.replace("", "");
 
         try {
             java.lang.reflect.Field field = TextElement.class.getDeclaredField("content");
