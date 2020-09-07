@@ -1,7 +1,10 @@
 package config;
 
 import jdk.nashorn.internal.runtime.logging.Logger;
-import org.mybatis.generator.api.*;
+import org.mybatis.generator.api.FullyQualifiedTable;
+import org.mybatis.generator.api.IntrospectedColumn;
+import org.mybatis.generator.api.IntrospectedTable;
+import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.internal.db.ConnectionFactory;
@@ -14,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @author wenxuan.wong
+ * @author wenxuan.wang
  */
 @Logger
 public class CommentPlugin extends PluginAdapter {
@@ -50,8 +53,7 @@ public class CommentPlugin extends PluginAdapter {
                 remarks = rs.getString("REMARKS");
             }
             closeConnection(connection, rs);
-        } catch (SQLException e) {
-        }
+        } catch (SQLException e) {}
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-M-d");
         topLevelClass.addJavaDocLine("/**");
@@ -79,14 +81,12 @@ public class CommentPlugin extends PluginAdapter {
         if (null != rs) {
             try {
                 rs.close();
-            } catch (SQLException e) {
-            }
+            } catch (SQLException e) {}
         }
         if (connection != null) {
             try {
                 connection.close();
-            } catch (SQLException e) {
-            }
+            } catch (SQLException e) {}
         }
 
     }

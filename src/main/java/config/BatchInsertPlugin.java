@@ -1,24 +1,20 @@
 package config;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import config.content.*;
-import config.exception.GenException;
+import config.exception.GenterException;
+import config.utils.PropertiesUtil;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
-import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
-import org.mybatis.generator.api.dom.java.Interface;
-import org.mybatis.generator.api.dom.java.JavaVisibility;
-import org.mybatis.generator.api.dom.java.Method;
-import org.mybatis.generator.api.dom.java.Parameter;
-import org.mybatis.generator.api.dom.java.TopLevelClass;
+import org.mybatis.generator.api.dom.java.*;
 import org.mybatis.generator.api.dom.xml.Attribute;
 import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 批量插入插件
@@ -41,7 +37,8 @@ public class BatchInsertPlugin extends PluginAdapter {
      */
     @Override
     public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
-        addBatchInsertSelectiveXml(document, introspectedTable);
+        String dataType = PropertiesUtil.getProperty("dataBaseType", "mysql");
+        addBatchInsertSelectiveXml(document, introspectedTable, dataType);
         return super.sqlMapDocumentGenerated(document, introspectedTable);
     }
 
@@ -75,7 +72,7 @@ public class BatchInsertPlugin extends PluginAdapter {
             if (introspectedTable.getRules().generatePrimaryKeyClass()) {
                 paramListType = new FullyQualifiedJavaType(introspectedTable.getPrimaryKeyType());
             } else {
-                throw new GenException("生成失败");
+                throw new GenterException("生成失败");
             }
         }
         paramType.addTypeArgument(paramListType);
@@ -86,7 +83,7 @@ public class BatchInsertPlugin extends PluginAdapter {
         inter.addMethod(ibsmethod);
     }
 
-    private void addBatchInsertSelectiveXml(Document document, IntrospectedTable introspectedTable) {
+    private void addBatchInsertSelectiveXml(Document document, IntrospectedTable introspectedTable, String dataBase) {
         List<IntrospectedColumn> columns = introspectedTable.getAllColumns();
 
         String incrementField = introspectedTable.getTableConfiguration().getProperties().getProperty("incrementField");
@@ -113,6 +110,11 @@ public class BatchInsertPlugin extends PluginAdapter {
         foreachElement.addAttribute(new Attribute(Attr.COLLECTION, Text.LIST));
         foreachElement.addAttribute(new Attribute(Attr.INDEX, Text.INDEX));
         foreachElement.addAttribute(new Attribute(Attr.ITEM, Text.ITEM));
+        if (DataBaseType.ORACLE.equals(dataBase)) {
+            foreachElement.addAttribute(new Attribute(Attr.OPEN, Text.BEGIN));
+            foreachElement.addAttribute(new Attribute(Attr.CLOSE, Text._END));
+            foreachElement.addAttribute(new Attribute(Attr.SEPARATOR, Text.SEMICOLON));
+        }
 
         for (IntrospectedColumn introspectedColumn : columns) {
             String columnName = introspectedColumn.getActualColumnName();
@@ -134,7 +136,9 @@ public class BatchInsertPlugin extends PluginAdapter {
         foreachElement.addElement(trim1Element);
         foreachElement.addElement(new TextElement(" values "));
         foreachElement.addElement(javaPropertyAndDbType);
-        foreachElement.addElement(new TextElement(Text.SEMICOLON));
+        if (DataBaseType.MYSQL.equals(dataBase)) {
+            foreachElement.addElement(new TextElement(Text.SEMICOLON));
+        }
 
         document.getRootElement().addElement(insertBatchElement);
     }

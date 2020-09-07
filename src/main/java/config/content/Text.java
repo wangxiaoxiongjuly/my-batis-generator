@@ -1,7 +1,7 @@
 package config.content;
 
 /**
- * @author wenxuan.wong
+ * @author wenxuan.wang
  */
 public class Text {
     private Text() {
@@ -19,4 +19,6 @@ public class Text {
     public static final String AND = " and ";
     public static final String OR = " or ";
     public static final String JDBC_TYPE = "jdbcType";
+    public static final String BEGIN = "begin";
+    public static final String _END = ";end;";
 }

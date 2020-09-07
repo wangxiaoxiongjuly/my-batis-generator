@@ -6,7 +6,7 @@ import org.mybatis.generator.api.PluginAdapter;
 import java.util.List;
 
 /**
- * @author wenxuan.wong
+ * @author wenxuan.wang
  */
 public class RenameExampleAndPrimaryKeyPlugin extends PluginAdapter {
     @Override

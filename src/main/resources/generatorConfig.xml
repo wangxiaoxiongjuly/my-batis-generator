@@ -12,9 +12,9 @@
         <property name="javaFileEncoding" value="UTF-8"/>
         <property name="mergeable" value="false"/>
 
-
         <!-- like插件  -->
         <plugin type="org.mybatis.generator.plugins.CaseInsensitiveLikePlugin"/>
+        <plugin type="config.EqualToPlugin"/>
         <!-- 序列化插件  -->
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
         <!-- 重命名插件 Example -->
@@ -25,16 +25,16 @@
         <!-- 重命名主键插件  -->
         <plugin type="config.RenameExampleAndPrimaryKeyPlugin" />
         <!-- 文件覆盖插件 -->
-        <plugin type="config.OverIsMergePlugin" />
-
+        <plugin type="config.OverIsMergeablePlugin" />
         <!-- 批量添加插件 -->
         <plugin type="config.BatchInsertPlugin" />
         <!-- 批量修改插件 -->
         <plugin type="config.BatchUpdatePlugin" />
         <!-- InsertPrimaryPlugin -->
         <plugin type="config.InsertPrimaryPlugin"/>
-
-        <plugin type="${dateBasePlugin}" />
+        <!-- 分页插件 -->
+        <plugin type="config.PagingPlugin" />
+        <!-- 注释插件 -->
         <plugin type="config.CommentPlugin">
             <property name="modelClassAuthor" value="${author}" />
         </plugin>
@@ -58,9 +58,10 @@
         </jdbcConnection>
 
         <!-- 默认false，把JDBC DECIMAL 和 NUMERIC 类型解析为 Integer，为 true时把JDBC DECIMAL 和
-            NUMERIC 类型解析为java.math.BigDecimal -->
-        <javaTypeResolver type="org.mybatis.generator.internal.types.JavaTypeResolverDefaultImpl">
-            <property name="forceBigDecimals" value="true" />
+            NUMERIC 类型解析为java.math.BigDecimal,转换tinyint为bool此处 -->
+        <javaTypeResolver type="config.MyJavaTypeResolverDefaultImpl">
+            <!--<property name="forceBigDecimals" value="true" />-->
+            <property name="forceBigDecimals" value="false" />
         </javaTypeResolver>
 
         <!-- targetProject:生成PO类的位置 -->
@@ -86,8 +87,9 @@
             <property name="enableSubPackages" value="false" />
         </javaClientGenerator>
 
-        <!-- 表 -->
-        <table schema="${jdbc.userId}" tableName="${table1.Name}" domainObjectName="${table1.OName}"/>
+
+        <!-- 表 oracle可能存在同名表跨库时 schema="${jdbc.userId}"  -->
+        <table tableName="${table1.Name}" domainObjectName="${table1.OName}"/>
 
     </context>
 </generatorConfiguration>

@@ -1,11 +1,8 @@
 package config;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import config.content.*;
-import config.exception.GenException;
+import config.exception.GenterException;
+import config.utils.PropertiesUtil;
 import org.mybatis.generator.api.CommentGenerator;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
@@ -16,10 +13,14 @@ import org.mybatis.generator.api.dom.xml.Document;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * 批量更新插件
  *
- * @author wenxuan.wong
+ * @author wenxuan.wang
  */
 public class BatchUpdatePlugin extends PluginAdapter {
 
@@ -67,8 +68,9 @@ public class BatchUpdatePlugin extends PluginAdapter {
 
     @Override
     public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
-        addBatchUpdateXml(document, introspectedTable);
-        addBatchUpdateExampleXml(document, introspectedTable);
+        String dataType = PropertiesUtil.getProperty("dataBaseType", "mysql");
+        addBatchUpdateXml(document, introspectedTable, dataType);
+        addBatchUpdateExampleXml(document, introspectedTable, dataType);
         return super.sqlMapDocumentGenerated(document, introspectedTable);
     }
 
@@ -102,7 +104,7 @@ public class BatchUpdatePlugin extends PluginAdapter {
             if (introspectedTable.getRules().generatePrimaryKeyClass()) {
                 paramListType = new FullyQualifiedJavaType(introspectedTable.getPrimaryKeyType());
             } else {
-                throw new GenException("批量更新语句生成失败");
+                throw new GenterException("批量更新语句生成失败");
             }
         }
         paramType.addTypeArgument(paramListType);
@@ -132,7 +134,7 @@ public class BatchUpdatePlugin extends PluginAdapter {
         if (introspectedTable.getRules().generateExampleClass()) {
             paramListType = new FullyQualifiedJavaType(introspectedTable.getExampleType());
         } else {
-            throw new GenException("批量更新Example语句生成失败");
+            throw new GenterException("批量更新Example语句生成失败");
         }
         paramType.addTypeArgument(paramListType);
 
@@ -142,7 +144,7 @@ public class BatchUpdatePlugin extends PluginAdapter {
         inter.addMethod(ibsmethod);
     }
 
-    private void addBatchUpdateXml(Document document, IntrospectedTable introspectedTable) {
+    private void addBatchUpdateXml(Document document, IntrospectedTable introspectedTable, String dataBase) {
         List<IntrospectedColumn> columns = introspectedTable.getAllColumns();
         if (introspectedTable.getPrimaryKeyColumns().isEmpty()) {
             return;
@@ -157,6 +159,12 @@ public class BatchUpdatePlugin extends PluginAdapter {
         foreach.addAttribute(new Attribute(Attr.COLLECTION, Text.LIST));
         foreach.addAttribute(new Attribute(Attr.ITEM, Text.ITEM));
         foreach.addAttribute(new Attribute(Attr.INDEX, Text.INDEX));
+
+        if (DataBaseType.ORACLE.equals(dataBase)) {
+            foreach.addAttribute(new Attribute(Attr.OPEN, Text.BEGIN));
+            foreach.addAttribute(new Attribute(Attr.CLOSE, Text._END));
+            foreach.addAttribute(new Attribute(Attr.SEPARATOR, Text.SEMICOLON));
+        }
 
         foreach.addElement(new TextElement("update " + introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime()));
 
@@ -179,13 +187,15 @@ public class BatchUpdatePlugin extends PluginAdapter {
             foreach.addElement(new TextElement((index > 0 ? " AND " : "") + i.getActualColumnName() + " = #{item." + i.getJavaProperty() + "," + Text.JDBC_TYPE + "=" + i.getJdbcTypeName() + "}"));
             index++;
         }
-        foreach.addElement(new TextElement(Text.SEMICOLON));
+        if (DataBaseType.MYSQL.equals(dataBase)) {
+            foreach.addElement(new TextElement(Text.SEMICOLON));
+        }
         updBatchElement.addElement(foreach);
 
         document.getRootElement().addElement(updBatchElement);
     }
 
-    private void addBatchUpdateExampleXml(Document document, IntrospectedTable introspectedTable) {
+    private void addBatchUpdateExampleXml(Document document, IntrospectedTable introspectedTable, String dataBase) {
         List<IntrospectedColumn> columns = introspectedTable.getAllColumns();
 
         XmlElement updBatchElement = new XmlElement(Ele.UPDATE);
@@ -196,6 +206,12 @@ public class BatchUpdatePlugin extends PluginAdapter {
         foreach.addAttribute(new Attribute(Attr.COLLECTION, Text.LIST));
         foreach.addAttribute(new Attribute(Attr.ITEM, Text.ITEM));
         foreach.addAttribute(new Attribute(Attr.INDEX, Text.INDEX));
+
+        if (DataBaseType.ORACLE.equals(dataBase)) {
+            foreach.addAttribute(new Attribute(Attr.OPEN, Text.BEGIN));
+            foreach.addAttribute(new Attribute(Attr.CLOSE, Text._END));
+            foreach.addAttribute(new Attribute(Attr.SEPARATOR, Text.SEMICOLON));
+        }
 
         foreach.addElement(new TextElement("update " + introspectedTable.getAliasedFullyQualifiedTableNameAtRuntime()));
 
@@ -215,7 +231,9 @@ public class BatchUpdatePlugin extends PluginAdapter {
         ifExampleCauseEmpty.addElement(getExampleClause());
         foreach.addElement(ifExampleCauseEmpty);
 
-        foreach.addElement(new TextElement(Text.SEMICOLON));
+        if (DataBaseType.MYSQL.equals(dataBase)) {
+            foreach.addElement(new TextElement(Text.SEMICOLON));
+        }
         updBatchElement.addElement(foreach);
 
         document.getRootElement().addElement(updBatchElement);
